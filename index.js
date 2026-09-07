@@ -5,20 +5,21 @@ const client = new OpenAI({
 	apiKey: process.env.OpenAI_API_KEY,
 });
 
-const tools = JSON.parse(
-	fs.readFileSync("./tools.json", "utf8")
-	);
-
-const config = JSON.parse(
-	fs.readFileSync("./config.json", "utf8")
-);
-
 const rl = readline.createInterface({
 	input: process.stdin, 
 	output: process .stdout,
 });
 
+const tools = JSON.parse(
+	fs.readFileSync("./tools.json", "utf8")
+);
 
+const config = JSON.parse(
+	fs.readFileSync("./config.json", "utf8")
+);
+
+const instructions = config.instructions;
+const model = config.model;
 
 let previousResponseId = null;
 
@@ -31,16 +32,17 @@ function prompt() {
 
 		try {
 			const response = await client.responses.create({
-				model: "gpt-5.6",
-				...(previousResponseId && {
-      				previous_response_id: previousResponseId,
-    			}),
-				instructions: config.instructions,
+				model,
+				instructions,
 				input,
 				tools,
-				});
-				previousResponseId = response.id;
-				console.log("\nLLm:",response.output_text, "\n");
+				...(previousResponseId && {
+      				previous_response_id: previousResponseId, }),
+				
+			});
+			previousResponseId = response.id;
+			console.log("\nLLm:",response.output_text, "\n");
+			
 			} catch (error) {
 				console.log(error.message);
 			}
@@ -48,6 +50,3 @@ function prompt() {
 	});
 }
 prompt();
-
-
-
