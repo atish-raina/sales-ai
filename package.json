@@ -1,0 +1,15 @@
+{
+  "name": "sales-ai",
+  "version": "1.0.0",
+  "description": "Open source sales agent ai",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "openai": "^7.10.0"
+  }
+}
