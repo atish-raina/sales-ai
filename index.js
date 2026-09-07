@@ -38,8 +38,22 @@ function getProductPrice({product}) {
 	};
 }
 
+function getLeadStatus({email}) {
+	const leads = {
+		"john@example.com": "hot",
+		"sam@example.com": "warm",
+		"bob@example.com": "cold",
+	};
+
+	return {
+		email,
+		status: leads[email.toLowerCase()] || "not found",
+	}
+}
+
 const toolFunctions = {
 	get_product_price: getProductPrice,
+	get_lead_status: getLeadStatus,
 }
 
 function prompt() {
