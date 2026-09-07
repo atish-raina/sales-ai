@@ -1,0 +1,35 @@
+[
+  {
+    "type": "function",
+    "name": "get_product_price",
+    "description": "Get the price of a product plan.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "product": {
+          "type": "string",
+          "enum": ["basic", "pro", "enterprise"]
+        }
+      },
+      "required": ["product"],
+      "additionalProperties": false
+    },
+    "strict": true
+  },
+  {
+    "type": "function",
+    "name": "get_lead_status",
+    "description": "Get the status of a sales lead by email.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      },
+      "required": ["email"],
+      "additionalProperties": false
+    },
+    "strict": true
+  }
+]
