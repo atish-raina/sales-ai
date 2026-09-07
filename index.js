@@ -19,18 +19,21 @@ const config = JSON.parse(
 	fs.readFileSync("./config.json", "utf8")
 );
 
+const prices = JSON.parse(
+	fs.readFileSync("./db/prices.json")
+);
+
+const leads = JSON.parse(
+	fs.readFileSync("./db/leads.json")
+);
+
+
 const instructions = config.instructions;
 const model = config.model;
 
 let previousResponseId = null;
 
 function getProductPrice({product}) {
-	const prices = {
-		basic: 100, 
-		pro: 200,
-		enterprise: 500,
-	};
-
 	return {
 		product,
 		price: prices[product],
@@ -39,12 +42,6 @@ function getProductPrice({product}) {
 }
 
 function getLeadStatus({email}) {
-	const leads = {
-		"john@example.com": "hot",
-		"sam@example.com": "warm",
-		"bob@example.com": "cold",
-	};
-
 	return {
 		email,
 		status: leads[email.toLowerCase()] || "not found",
