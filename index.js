@@ -63,6 +63,42 @@ async function runAgent(userInput, previousResponseId = null) {
 				previous_response_id: previousResponseId, }),
 				
 	});
+
+	while(true) {
+		const toolCalls = response.output.filter(
+			item => item.type === "function_call"
+		)
+
+		if (toolCalls.length === 0) {
+			break;
+		}
+
+		const toolOutputs = [];
+
+		for(const call of toolCalls) {
+			const args = JSON.parse(call.arguments);
+			const fn = toolFunctions[call.name];
+
+			if(!fn) {
+				throw new Error(
+					`Unknown tool: ${call.name}`
+				)
+			}
+
+			const result = await fn(args);
+			console.log("Tool output: ", result);
+
+			toolOutputs.push({
+				type: "function_call_output",
+				call_id: call.call_id,
+				output: JSON.stringify(result),
+			})
+		}
+
+		response = await runAgent(toolOutputs, response.id);
+
+	}
+
 	return response;
 }
 
@@ -75,49 +111,14 @@ function prompt() {
 
 		try {
 			let response = await runAgent(input, previousResponseId);
-
-			while(true) {
-				const toolCalls = response.output.filter(
-					item => item.type === "function_call"
-				)
-
-				if (toolCalls.length === 0) {
-					break;
-				}
-
-				const toolOutputs = [];
-
-				for(const call of toolCalls) {
-					const args = JSON.parse(call.arguments);
-					const fn = toolFunctions[call.name];
-
-					if(!fn) {
-						throw new Error(
-							`Unknown tool: ${call.name}`
-						)
-					}
-
-					const result = await fn(args);
-					console.log("Tool output: ", result);
-
-					toolOutputs.push({
-						type: "function_call_output",
-						call_id: call.call_id,
-						output: JSON.stringify(result),
-					})
-				}
-
-				response = await runAgent(toolOutputs, response.id);
-
-			}
-
 			previousResponseId = response.id;
+			
 			console.log("\nLLm:",response.output_text, "\n");
 			
-			} catch (error) {
-				console.log(error.message);
-			}
-			prompt();
+		} catch (error) {
+			console.log(error.message);
+		}
+		prompt();
 	});
 }
 prompt();
