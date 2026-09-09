@@ -1,5 +1,5 @@
 import readline from "readline";
-import { runAgent } from "./agent.js";
+import { runAgent } from "./agent/agent.js";
 
 const rl = readline.createInterface({
 	input: process.stdin, 
