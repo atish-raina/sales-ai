@@ -55,6 +55,8 @@ export async function runAgent(userInput, previousResponseId = null) {
 				
 	});
 
+	const calledTools = [];
+
 	while(true) {
 		const toolCalls = response.output.filter(
 			item => item.type === "function_call"
@@ -83,12 +85,17 @@ export async function runAgent(userInput, previousResponseId = null) {
 				type: "function_call_output",
 				call_id: call.call_id,
 				output: JSON.stringify(result),
-			})
+			});
+
+			calledTools.push(call.name);
 		}
 
 		response = await runAgent(toolOutputs, response.id);
 
 	}
 
-	return response;
+	return {
+		response,
+		calledTools,
+	};
 }

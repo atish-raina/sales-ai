@@ -16,7 +16,8 @@ function prompt() {
 		}
 
 		try {
-			let response = await runAgent(input, previousResponseId);
+			const result = await runAgent(input, previousResponseId);
+			const response = result.response;
 			previousResponseId = response.id;		
 			console.log("\nLLm:",response.output_text, "\n");
 		} catch (error) {
