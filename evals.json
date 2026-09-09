@@ -1,0 +1,14 @@
+[
+  {
+    "input": "What is the price of the pro plan?",
+    "expectedTool": "get_product_price"
+  },
+  {
+    "input": "What is the status of john@example.com?",
+    "expectedTool": "get_lead_status"
+  },
+  {
+    "input": "Who is the president of France?",
+    "expectedTool": null
+  }
+]

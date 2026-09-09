@@ -53,6 +53,19 @@ const toolFunctions = {
 	get_lead_status: getLeadStatus,
 }
 
+async function runAgent(userInput, previousResponseId = null) {
+	let response = await client.responses.create({
+		model,
+		instructions,
+		tools,
+		input: userInput,
+		...(previousResponseId && {
+				previous_response_id: previousResponseId, }),
+				
+	});
+	return response;
+}
+
 function prompt() {
 	rl.question("user: ", async(input) => {
 		if(input.trim().toLowerCase() === "exit") {
@@ -61,15 +74,7 @@ function prompt() {
 		}
 
 		try {
-			let response = await client.responses.create({
-				model,
-				instructions,
-				input,
-				tools,
-				...(previousResponseId && {
-      				previous_response_id: previousResponseId, }),
-				
-			});
+			let response = await runAgent(input, previousResponseId);
 
 			while(true) {
 				const toolCalls = response.output.filter(
@@ -102,13 +107,8 @@ function prompt() {
 					})
 				}
 
-				response = await client.responses.create({
-					model, 
-					instructions,
-					tools,
-					previous_response_id: response.id, 
-					input: toolOutputs,
-				})
+				response = await runAgent(toolOutputs, response.id);
+
 			}
 
 			previousResponseId = response.id;
