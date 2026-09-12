@@ -90,7 +90,13 @@ export async function runAgent(userInput, previousResponseId = null) {
 			calledTools.push(call.name);
 		}
 
-		response = await runAgent(toolOutputs, response.id);
+		response = await client.responses.create({
+			model,
+			instructions,
+			tools,
+			input: toolOutputs,
+			previous_response_id: response.id,
+		});
 
 	}
 
